@@ -2,4 +2,15 @@
     clear: both;
     content: "";
     display: table;
+    border-radius: 25px;
+}
+
+.account-name {
+    width: 50%;
+    border-radius: 25px;
+}
+
+.account-balance {
+    width: 50%;
+    border-radius: 25px;
 }
