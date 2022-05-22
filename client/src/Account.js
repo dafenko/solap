@@ -1,27 +1,43 @@
 
 import React, { Component } from 'react';
-import * as solanaWeb3 from '@solana/web3.js';
-import * as fs from 'fs';
 import './Account.css';
 
 class Account extends Component {
-
-    getBalance() {
-        fs.readFile(this.props.path, (err, data) => {
-            if (err) throw err;
-            let keypair = JSON.parse(data);
-            console.log(student);
-        });
+    constructor(props) {
+        super(props);
+   
+        this.state = {
+            name: "",
+            balance: 0,
+            DataisLoaded: false
+        };
     }
 
+    componentDidMount() {
+        fetch("/api/account/balance")
+        .then((res) => res.json())
+        .then((json) => {
+            this.setState({
+                name: json.name,
+                balance: json.balance,
+                DataisLoaded: true
+            });
+        })
+        
+    };
+
     render() {
+        const { DataisLoaded, items } = this.state;
+        if (!DataisLoaded) return <div>
+            <h1> Pleses wait some time.... </h1> </div> ;
+            
         return (
         <div className="account-row">
             <button className="account-name">
-                {this.props.name}
+                {this.state.name}
             </button>
             <button className="account-balance"> 
-                {this.getBalance()} 
+                {this.state.balance} 
             </button>
         </div>
         );
