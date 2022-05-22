@@ -5,9 +5,15 @@ const PORT = process.env.PORT || 3001;
 const app = express();
 const solanaWeb3 = require('@solana/web3.js');
 const fs = require('fs/promises');
+const path = require('node:path');
 
-async function getBalance() {
-  const data = await fs.readFile("/home/dafe/.solana-devel/solana-devel-account.json", (err, data) => {
+app.get("/api", (req, res) => {
+    res.json({ message: "Hello from server 2!" });
+  });
+
+
+async function getBalance(accountName) {
+  const data = await fs.readFile("/home/dafe/.solana-devel/" + accountName + ".json", (err, data) => {
       if (err) throw err;
   });
 
@@ -26,16 +32,38 @@ async function getBalance() {
   return balance;
 }
 
-app.get("/api", (req, res) => {
-    res.json({ message: "Hello from server 2!" });
-  });
-
 app.get("/api/account/balance", async (req, res) => {
-    let balance = await getBalance();
+    let balance = await getBalance(req.query.account);
     var account = {};
-    account.name = "ucet";
+    account.name = req.query.account;
     account.balance = balance;
     res.json(account);
+});
+
+async function getAccounts() {
+
+  try {
+    files = await fs.readdir('/home/dafe/.solana-devel');
+  } catch (err) {
+    console.log(err);
+  }
+
+  var accounts = [];
+  files.forEach(file => {
+    if (path.extname(file) == ".json") {
+      var filename = path.basename(file);
+      accounts.push(filename.replace(/\.json$/, ""));
+    }
+  });
+
+  console.log(accounts); 
+  return accounts;
+}
+
+
+app.get("/api/accounts", async (req, res) => {
+  let accounts = await getAccounts();
+  res.json(accounts);
 });
 
 app.listen(PORT, () => {

@@ -1,20 +1,21 @@
 
 import React, { Component } from 'react';
 import './Account.css';
+const { URL, URLSearchParams } = require('url');
 
 class Account extends Component {
     constructor(props) {
         super(props);
    
         this.state = {
-            name: "",
+            name: props.name,
             balance: 0,
             DataisLoaded: false
         };
     }
 
     componentDidMount() {
-        fetch("/api/account/balance")
+        fetch("/api/account/balance?account=" + this.state.name)
         .then((res) => res.json())
         .then((json) => {
             this.setState({
@@ -45,17 +46,39 @@ class Account extends Component {
 }
 
 class Accounts extends Component {
+    constructor(props) {
+        super(props);
+   
+        this.state = {
+            accounts: [],
+        };
+    }
+
+    componentDidMount() {
+        fetch("/api/accounts")
+        .then((res) => res.json())
+        .then((json) => {
+            this.setState({
+                accounts: json,
+            });
+        })
+        
+    };
+
+    renderAccount(fileName) {
+        return (
+            <Account 
+                name={fileName}
+            />
+        )
+    }
+
     render () {
         return (
             <div>
-            <Account 
-                name="xsdddddd"
-                path="/home/dafe/.solana-devel/solana-devel-account.json"
-            />
-            <Account 
-                name="aaaaaaa"
-                balance="14"
-            />
+            {this.state.accounts.map((accountName, i) => {
+                return(<Account key={accountName} name={accountName} />)
+            })}
             </div>
         );
     }
