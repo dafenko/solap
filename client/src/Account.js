@@ -30,7 +30,7 @@ class Account extends Component {
     render() {
         const { DataisLoaded, items } = this.state;
         if (!DataisLoaded) return <div>
-            <h1> Pleses wait some time.... </h1> </div> ;
+            <h1> Please wait some time.... </h1> </div> ;
             
         return (
         <div className="account-row">
